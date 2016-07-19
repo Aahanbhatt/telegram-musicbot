@@ -1,0 +1,5 @@
+beautifulsoup4==4.4.1
+future==0.15.2
+pony==0.6.5
+python-telegram-bot==4.2.1
+youtube-dl==2016.6.25
