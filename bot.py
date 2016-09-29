@@ -11,8 +11,8 @@ from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
 from telegram.ext.dispatcher import run_async
 from pony.orm import db_session, select
 
-from credentials import TOKEN
 from database import db
+from credentials import TOKEN
 
 from user import User
 
@@ -59,8 +59,10 @@ def music(bot, update):
     chat_id = update.message.chat_id
     text = update.message.text
 
-    title, video_url, song = search(text)
+    title, video_url = search(text)
     lyrics = get_lyrics(text)
+    if not lyrics:
+        lyrics="Sorry no lyrics found :( "
     with db_session:
         User(user_id=user_id,
              username=username,
@@ -90,7 +92,7 @@ def search(text):
     title = tag.text
     video_url = 'https://www.youtube.com' + tag.get('href')
 
-    return title, video_url, text
+    return title, video_url
 
 
 def download(title, video_url):
@@ -109,10 +111,10 @@ def get_lyrics(song):
 
     t=song.split()
     x=len(t)
-    #print x
     q=t[0]
     for i in range(1,x):
         q = q + "+" + t[i]
+
 
     url="http://search.azlyrics.com/search.php?q="+q
     s= urlopen(url).read()
@@ -126,13 +128,14 @@ def get_lyrics(song):
 
         url1= link['href']
 
-    s1=urlopen(url1).read()
+        s1=urlopen(url1).read()
 
-    soup1=BeautifulSoup(s1,'html.parser')
-    for link in soup1.find_all('div',{'class':None}):
-        fin_lyr = (link.text)
+        soup1=BeautifulSoup(s1,'html.parser')
+        for link in soup1.find_all('div',{'class':None}):
+            lyr_text = link.text
 
-    return fin_lyr
+
+     return lyr_text
 
 
 dp.add_handler(CommandHandler("start", start))
