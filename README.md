@@ -1,3 +1,7 @@
 # chat-bots
 
-Repository for a music chat bot, where you can give the name of the music as a chat and it will start download in the same chat window itself. 
+A Music bot to download songs and get lyrics of that particular song entered in the chat window. 
+
+The bot has been deployed on Telegram messenger. @Foolsbot is the username of the bot.
+
+
