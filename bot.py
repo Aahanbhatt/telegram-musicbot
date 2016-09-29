@@ -137,7 +137,7 @@ def get_lyrics(song):                                                           
             lyr_text = link.text
 
 
-     return lyr_text
+    return lyr_text
 
 
 dp.add_handler(CommandHandler("start", start))                                  # CommandHandler to start the bot giving /start command in the chat window
