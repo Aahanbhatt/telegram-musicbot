@@ -20,24 +20,24 @@ from user import User
 DB_NAME = 'db.sqlite'
 
 logging.basicConfig(
-    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',              #basic commands to print the server logs
     level=logging.INFO)
 
-u = Updater(TOKEN)
+u = Updater(TOKEN)                                                              #token updater
 dp = u.dispatcher
 
 db.bind('sqlite', DB_NAME, create_db=True)
 db.generate_mapping(create_tables=True)
 
 
-def start(bot, update):
+def start(bot, update):                                                         #function implementation when a bot is started/restarted
     chat_id = update.message.chat_id
 
     bot.sendMessage(chat_id,
                     text="Hello, please type a song name to start download")
 
 
-def admin(bot, update):
+def admin(bot, update):                                                         #function implementation where the admin can view the latest song requests
     chat_id = update.message.chat_id
     username = update.message.chat.username
 
@@ -51,7 +51,8 @@ def admin(bot, update):
 
 
 @run_async
-def music(bot, update):
+def music(bot, update):                                                         #function implementation where the all the bot messages (song and lyrics)
+                                                                                # are sent
     user_id = update.message.from_user.id
     username = update.message.chat.username
     first_name = update.message.from_user.first_name
@@ -82,7 +83,7 @@ def music(bot, update):
     os.remove(title + '.mp3')
 
 
-def search(text):
+def search(text):                                                               #function implementation to find the particular link to download
     query = '+'.join(text.lower().split())
 
     url = 'https://www.youtube.com/results?search_query=' + query
@@ -95,7 +96,8 @@ def search(text):
     return title, video_url
 
 
-def download(title, video_url):
+def download(title, video_url):                                                 #function implementing youtube_dl library to download the particular song
+
     ydl_opts = {
         'outtmpl': title + '.%(ext)s',
         'format': 'bestaudio/best', 'postprocessors': [{
@@ -107,7 +109,7 @@ def download(title, video_url):
     with youtube_dl.YoutubeDL(ydl_opts) as ydl:
         ydl.download([video_url])
 
-def get_lyrics(song):
+def get_lyrics(song):                                                           #function implementation to scrape lyrics of particular song
 
     t=song.split()
     x=len(t)
@@ -138,9 +140,9 @@ def get_lyrics(song):
      return lyr_text
 
 
-dp.add_handler(CommandHandler("start", start))
-dp.add_handler(CommandHandler("admin", admin))
-dp.add_handler(MessageHandler([Filters.text], music))
+dp.add_handler(CommandHandler("start", start))                                  # CommandHandler to start the bot giving /start command in the chat window
+dp.add_handler(CommandHandler("admin", admin))                                  # CommandHandler to check the last 5 song requests, /admin command can be used only by the admin
+dp.add_handler(MessageHandler([Filters.text], music))                           # MessageHandler to send the messages using the music function
 
 u.start_polling()
 u.idle()
